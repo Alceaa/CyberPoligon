@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cyberpoligonApp.apps.CyberpoligonappConfig'
+    'cyberpolygonApp.apps.CyberpolygonappConfig'
 ]
 
 MIDDLEWARE = [
@@ -50,7 +50,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'cyberpoligon.urls'
+ROOT_URLCONF = 'cyberpolygon.urls'
 
 TEMPLATES = [
     {
@@ -68,7 +68,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'cyberpoligon.wsgi.application'
+WSGI_APPLICATION = 'cyberpolygon.wsgi.application'
 
 
 # Database

@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class CyberpoligonappConfig(AppConfig):
+class CyberpolygonappConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'cyberpoligonApp'
+    name = 'cyberpolygonApp'
