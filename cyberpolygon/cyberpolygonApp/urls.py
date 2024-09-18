@@ -1,17 +1,9 @@
-<<<<<<< HEAD
-from django.urls import path, include
+from django.urls import path, include, re_path
 from . import views
 urlpatterns = [
     path('', views.init, name='init'),
     path('home/', views.home, name='home'),
     path("accounts/", include("allauth.urls")),
-=======
-from django.urls import re_path, path
-from . import views
-
-urlpatterns = [
-    path('', views.init, name='init'),
-
     path('api/user', views.UserListCreate.as_view()),
     re_path(r'^api/user/(?P<pk>[0-9]+)/$', views.UserRetrieveUpdateDestroy.as_view() ),
 
@@ -29,5 +21,4 @@ urlpatterns = [
 
     path('api/avatars/', views.UserAvatarListCreate.as_view()),
     re_path(r'^api/avatars/(?P<pk>[0-9]+)/$', views.UserAvatarRetrieveUpdateDestroy.as_view() ),
->>>>>>> origin/qqewi
 ]
