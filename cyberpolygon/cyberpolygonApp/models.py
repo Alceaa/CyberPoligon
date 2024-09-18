@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser
 import jsonfield
 from django.db import models
 from django.db.models import Model, OneToOneField
+<<<<<<< HEAD
 from django.contrib.auth.base_user import BaseUserManager
 
 class CustomUserManager(BaseUserManager):
@@ -42,10 +43,13 @@ class CustomUserManager(BaseUserManager):
         user.id_role = adminRole
         user.save(using=self.db)
         return user
+=======
+>>>>>>> origin/qqewi
 
 
 class User(AbstractUser):
     user_data = jsonfield.JSONField()
+<<<<<<< HEAD
     id_role = models.ForeignKey('Role', on_delete=models.PROTECT, null=True)
     
     REQUIRED_FIELDS = ["email"]
@@ -53,6 +57,12 @@ class User(AbstractUser):
 
 class Role(models.Model):
     role_name = models.TextField(max_length=50, default="user")
+=======
+    id_role = models.ForeignKey('Role', on_delete=models.PROTECT)
+
+class Role(models.Model):
+    role_name = models.TextField(max_length=50)
+>>>>>>> origin/qqewi
     description = models.TextField()
 
 class Category(models.Model):
@@ -80,4 +90,8 @@ class UserAvatar(models.Model):
     image_path = models.TextField(max_length=255)
     image_hash = models.TextField(max_length=255)
     created_at = models.DateField()
+<<<<<<< HEAD
 # Create your models here.
+=======
+# Create your models here.
+>>>>>>> origin/qqewi
