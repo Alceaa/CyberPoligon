@@ -6,3 +6,9 @@ def init(request):
             request,
             'empty.html'
         )
+
+def home(request):
+    return render(
+            request,
+            'home.html'
+    )

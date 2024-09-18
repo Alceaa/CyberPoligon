@@ -2,14 +2,57 @@ from django.contrib.auth.models import AbstractUser
 import jsonfield
 from django.db import models
 from django.db.models import Model, OneToOneField
+from django.contrib.auth.base_user import BaseUserManager
+
+class CustomUserManager(BaseUserManager):
+
+    def create_user(self, email, username, password, **extra_fields):
+
+        if not email:
+            raise ValueError("Email shoudn't be empty")
+        if not username:
+            raise ValueError("Username shouldn't be empty")
+        if not password:
+            raise ValueError("Password shoudn't be empty")
+        
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.is_admin = False
+        user.is_staff = False
+        userRole = Role.objects.create(role_name = "user")
+        user.id_role = userRole
+        user.save(using=self.db)
+        return user
+     
+    def create_superuser(self, email, password, **extra_fields):
+        
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("is_active", True)
+
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Superuser must have is_staff=True.")
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("Superuser must have is_superuser=True.")
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        adminRole = Role.objects.create(role_name = "admin")
+        user.id_role = adminRole
+        user.save(using=self.db)
+        return user
 
 
 class User(AbstractUser):
     user_data = jsonfield.JSONField()
-    id_role = models.ForeignKey('Role', on_delete=models.PROTECT)
+    id_role = models.ForeignKey('Role', on_delete=models.PROTECT, null=True)
+    
+    REQUIRED_FIELDS = ["email"]
+    objects = CustomUserManager()
 
 class Role(models.Model):
-    role_name = models.TextField(max_length=50)
+    role_name = models.TextField(max_length=50, default="user")
     description = models.TextField()
 
 class Category(models.Model):
