@@ -11,11 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-<<<<<<< HEAD
 import os
-=======
-
->>>>>>> origin/qqewi
 from django.conf.global_settings import AUTH_USER_MODEL
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -44,15 +40,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'cyberpolygonApp.apps.CyberpolygonappConfig',
-<<<<<<< HEAD
     'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-=======
     'rest_framework',
->>>>>>> origin/qqewi
 ]
 
 MIDDLEWARE = [
@@ -63,7 +56,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-<<<<<<< HEAD
     "allauth.account.middleware.AccountMiddleware"
 ]
 
@@ -76,20 +68,12 @@ SITE_ID = 1
 
 ACCOUNT_EMAIL_VERIFICATION = "none"
 
-=======
-]
-
->>>>>>> origin/qqewi
 ROOT_URLCONF = 'cyberpolygon.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-<<<<<<< HEAD
         'DIRS': [os.path.normpath(os.path.join(BASE_DIR, 'templates')),],
-=======
-        'DIRS': [],
->>>>>>> origin/qqewi
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -156,7 +140,6 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-<<<<<<< HEAD
 
 AUTH_USER_MODEL = "cyberpolygonApp.User"
 
@@ -168,6 +151,3 @@ ACCOUNT_FORMS = {
 'signup': 'cyberpolygonApp.forms.CustomSignupForm',
 }
 
-=======
-AUTH_USER_MODEL = "cyberpolygonApp.User"
->>>>>>> origin/qqewi
