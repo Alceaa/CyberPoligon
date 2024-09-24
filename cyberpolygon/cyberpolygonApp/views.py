@@ -1,8 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 
-<<<<<<< HEAD
-=======
+
 from rest_framework import generics
 from .serializers import *
 
@@ -62,18 +61,16 @@ class UserAvatarRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserAvatarSerializer
 
 
->>>>>>> origin/qqewi
+
 def init(request):
     return render(
             request,
             'empty.html'
         )
-<<<<<<< HEAD
+
 
 def home(request):
     return render(
             request,
             'home.html'
     )
-=======
->>>>>>> origin/qqewi

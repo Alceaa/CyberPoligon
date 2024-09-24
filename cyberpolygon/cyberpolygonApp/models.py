@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import Model, OneToOneField
 from django.contrib.auth.base_user import BaseUserManager
 
+
 class CustomUserManager(BaseUserManager):
 
     def create_user(self, email, username, password, **extra_fields):
@@ -14,19 +15,19 @@ class CustomUserManager(BaseUserManager):
             raise ValueError("Username shouldn't be empty")
         if not password:
             raise ValueError("Password shoudn't be empty")
-        
+
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.is_admin = False
         user.is_staff = False
-        userRole = Role.objects.create(role_name = "user")
+        userRole = Role.objects.create(role_name="user")
         user.id_role = userRole
         user.save(using=self.db)
         return user
-     
+
     def create_superuser(self, email, password, **extra_fields):
-        
+
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active", True)
@@ -38,7 +39,7 @@ class CustomUserManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
-        adminRole = Role.objects.create(role_name = "admin")
+        adminRole = Role.objects.create(role_name="admin")
         user.id_role = adminRole
         user.save(using=self.db)
         return user
@@ -47,23 +48,22 @@ class CustomUserManager(BaseUserManager):
 class User(AbstractUser):
     user_data = jsonfield.JSONField()
     id_role = models.ForeignKey('Role', on_delete=models.PROTECT, null=True)
-    
+
     REQUIRED_FIELDS = ["email"]
     objects = CustomUserManager()
 
-class Role(models.Model):
-    role_name = models.TextField(max_length=50, default="user")
-    id_role = models.ForeignKey('Role', on_delete=models.PROTECT)
 
 class Role(models.Model):
-    role_name = models.TextField(max_length=50)
+    role_name = models.TextField(max_length=50, default="user")
     description = models.TextField()
+
 
 class Category(models.Model):
     name = models.TextField(max_length=50)
 
+
 class Task(models.Model):
-    id = models.AutoField(primary_key = True, db_index=True)
+    id = models.AutoField(primary_key=True, db_index=True)
     title = models.TextField(max_length=100)
     description = models.TextField()
     points = models.IntegerField
@@ -71,16 +71,20 @@ class Task(models.Model):
     is_active = models.BooleanField()
     created_at = models.DateField()
 
+
 class Comments(models.Model):
     id = models.AutoField(primary_key=True, db_index=True)
-    task_id = models.ForeignKey('Task',  on_delete=models.PROTECT)
-    user_id = models.ForeignKey('User',  on_delete=models.PROTECT)
+    task_id = models.ForeignKey('Task', on_delete=models.PROTECT)
+    user_id = models.ForeignKey('User', on_delete=models.PROTECT)
     comment = models.TextField()
     rating = models.IntegerField()
     created_at = models.IntegerField()
+
 
 class UserAvatar(models.Model):
     user_id = OneToOneField('User', on_delete=models.PROTECT)
     image_path = models.TextField(max_length=255)
     image_hash = models.TextField(max_length=255)
     created_at = models.DateField()
+# Create your models here.
+
