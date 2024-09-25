@@ -46,6 +46,8 @@
   {% endif %}
   
   <button class="btn btn-outline-primary btn-lg" type="submit">{% trans "Sign Up" %}</button>
+
+  {% include "socialaccount/snippets/provider_list.html" with process="connect" %}
 </form>
 
 </div>

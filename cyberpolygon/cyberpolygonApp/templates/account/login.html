@@ -31,7 +31,6 @@
   {% endblock %}
 
 <h3 class="h3" id="head_banner">{% trans "Sign In" %}</h3>
-
 <form class="container-fluid text-center" id="login_form" method="POST" action="{% url 'account_login' %}">
   {% csrf_token %}
   
@@ -44,7 +43,11 @@
   {% endif %}
   
   <button  class="btn btn-outline-primary " type="submit">{% trans "Sign In" %}</button>
-  <a  class="btn btn-outline-dark" href="{% url 'account_reset_password' %}">{% trans "Forgot Password ?" %}</a>  
+  <a  class="btn btn-outline-dark" href="{% url 'account_reset_password' %}">{% trans "Forgot Password ?" %}</a> 
+
+  {% load socialaccount %}
+  <a href="{% provider_login_url 'google' %}">Login with Google</a>
+  <a href="{% provider_login_url 'github' %}">Login with GitHub</a>
 
 </form>
 </div>

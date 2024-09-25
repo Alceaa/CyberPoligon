@@ -11,12 +11,13 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
 import os
 from django.conf.global_settings import AUTH_USER_MODEL
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -42,29 +43,43 @@ INSTALLED_APPS = [
     'cyberpolygonApp.apps.CyberpolygonappConfig',
     'django.contrib.sites',
     'allauth',
+    'allauth_2fa',
+    'django_otp',
+    'django_otp.plugins.otp_totp',
+    'django_otp.plugins.otp_static',
+    'django.contrib.humanize',
+    'allauth.usersessions',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.github',
     'rest_framework',
+    'rest_framework.authtoken',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "allauth.account.middleware.AccountMiddleware"
+    'allauth.account.middleware.AccountMiddleware',
+    'django_otp.middleware.OTPMiddleware',
+    'allauth_2fa.middleware.AllauthTwoFactorMiddleware',
+    'allauth.usersessions.middleware.UserSessionsMiddleware',
 ]
 
 AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+    'rest_framework.authentication.TokenAuthentication',
 ]
 
-SITE_ID = 1 
+SITE_ID = 1
 
 ACCOUNT_EMAIL_VERIFICATION = "none"
 
@@ -147,7 +162,53 @@ AUTH_USER_MODEL = "cyberpolygonApp.User"
 LOGIN_REDIRECT_URL = "/cyberpolygon/home"
 ACCOUNT_LOGOUT_REDIRECT_URL ='../login/'
 
+SOCIALACCOUNT_QUERY_EMAIL = True
+ACCOUNT_LOGOUT_ON_GET= True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_REQUIRED = True
+
 ACCOUNT_FORMS = {
 'signup': 'cyberpolygonApp.forms.CustomSignupForm',
 }
 
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+        'EMAIL_AUTHENTICATION': True
+    }
+}
+
+ACCOUNT_ADAPTER = 'allauth_2fa.adapter.OTPAdapter'
+
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+    ],
+}
+
+
+#CORS_ORIGIN_WHITELIST = (
+#    "http://localhost:3000",
+#    "http://localhost:8000",
+#)
+
+#CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]
+CSRF_COOKIE_DOMAIN = None
+CSRF_COOKIE_SECURE = False
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = os.environ.get("EMAIL_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_PASSWORD")
+EMAIL_PORT = 587
