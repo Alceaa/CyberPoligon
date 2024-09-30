@@ -7,19 +7,20 @@ from django.contrib.auth.base_user import BaseUserManager
 class CustomUserManager(BaseUserManager):
 
     def create_user(self, email, username, password, **extra_fields):
+        
+        extra_fields.setdefault("is_staff", False)
+        extra_fields.setdefault("is_superuser", False)
 
-        if not email:
-            raise ValueError("Email shoudn't be empty")
         if not username:
             raise ValueError("Username shouldn't be empty")
         if not password:
             raise ValueError("Password shoudn't be empty")
         
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
+        user = self.model(**extra_fields)
+        if email:
+            email = self.normalize_email(email)
+            user.email = email
         user.set_password(password)
-        user.is_admin = False
-        user.is_staff = False
         userRole = Role.objects.create(role_name = "user")
         user.id_role = userRole
         user.save(using=self.db)
@@ -35,8 +36,10 @@ class CustomUserManager(BaseUserManager):
             raise ValueError("Superuser must have is_staff=True.")
         if extra_fields.get("is_superuser") is not True:
             raise ValueError("Superuser must have is_superuser=True.")
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
+        user = self.model(**extra_fields)
+        if email:
+            email = self.normalize_email(email)
+            user.email = email
         user.set_password(password)
         adminRole = Role.objects.create(role_name = "admin")
         user.id_role = adminRole
@@ -47,6 +50,8 @@ class CustomUserManager(BaseUserManager):
 class User(AbstractUser):
     user_data = jsonfield.JSONField()
     id_role = models.ForeignKey('Role', on_delete=models.PROTECT, null=True)
+    telegram_id = models.CharField(max_length=50, unique=True, null=True)
+    verification_code = models.CharField(max_length=6, null=True, blank=True)
     
     REQUIRED_FIELDS = ["email"]
     objects = CustomUserManager()

@@ -46,8 +46,9 @@
   <a  class="btn btn-outline-dark" href="{% url 'account_reset_password' %}">{% trans "Forgot Password ?" %}</a> 
 
   {% load socialaccount %}
-  <a href="{% provider_login_url 'google' %}">Login with Google</a>
+  <a href="{% provider_login_url 'yandex' %}">Login with Yandex</a>
   <a href="{% provider_login_url 'github' %}">Login with GitHub</a>
+  <a href="{% provider_login_url 'telegram' %}">Login with Telegram</a>
 
 </form>
 </div>
