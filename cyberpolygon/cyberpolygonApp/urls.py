@@ -1,20 +1,14 @@
 from django.urls import path, include, re_path
 from . import views
-from allauth.account.views import ConfirmEmailView, LoginView, LogoutView
-from dj_rest_auth.registration.views import ConfirmEmailView
 
 urlpatterns = [
     path('', views.init, name='init'),
     path('home/', views.home, name='home'),
     path("accounts/", include("allauth_2fa.urls")),
     path("accounts/", include("allauth.urls")),
-    path('accounts/confirm-email//', ConfirmEmailView.as_view(), name='account_confirm_email'),
     path('api/user', views.UserListCreate.as_view()),
     
     re_path(r'^api/user/(?P<pk>[0-9]+)/$', views.UserRetrieveUpdateDestroy.as_view() ),
-
-    path('api/roles/', views.RoleListCreate.as_view()),
-    re_path(r'^api/roles/(?P<pk>[0-9]+)/$', views.RoleRetrieveUpdateDestroy.as_view() ),
 
     path('api/categories/', views.CategoryListCreate.as_view()),
     re_path(r'^api/categories/(?P<pk>[0-9]+)/$', views.CategoryRetrieveUpdateDestroy.as_view() ),
@@ -29,8 +23,15 @@ urlpatterns = [
     re_path(r'^api/avatars/(?P<pk>[0-9]+)/$', views.UserAvatarRetrieveUpdateDestroy.as_view() ),
 
     #api auth
-    path('api/auth/social/', views.SocialLogin.as_view(), name='social_login'),
+    path('api/auth/yandex/', views.YandexLogin.as_view(), name='yandex_login_api'),
+    path('api/auth/github/', views.GitHubLogin.as_view(), name='github_login_api'),
+    path('api/auth/telegram/', views.TelegramLogin.as_view(), name='telegram_login_api'),
     path('api/auth/signup/', views.RegisterView.as_view(), name='registration'),
     path('api/auth/login/', views.LoginView.as_view(), name='login'),
     path('api/auth/logout/', views.LogoutView.as_view(), name='logout'),
+
+    #otp
+    path('api/generate_qr/', views.GenerateQRcode.as_view(), name='generate_qr_code'),
+    path('api/verify_otp/', views.VerifyOtp.as_view(), name='verify_otp'),
+    path('api/verify_telegram/', views.VerifyTelegram.as_view(), name='verify_telegram'),
 ]
