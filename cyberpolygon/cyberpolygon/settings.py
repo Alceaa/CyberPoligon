@@ -13,16 +13,16 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 from django.conf.global_settings import AUTH_USER_MODEL
-
+from dotenv import load_dotenv
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-jo_^iof5)a72klqrtd4y&(g(h5&3-cjld86&yq0!tzp8zjs6*%'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -42,31 +42,45 @@ INSTALLED_APPS = [
     'cyberpolygonApp.apps.CyberpolygonappConfig',
     'django.contrib.sites',
     'allauth',
+    'allauth_2fa',
+    'django_otp',
+    'django_otp.plugins.otp_totp',
+    'django_otp.plugins.otp_static',
+    'django.contrib.humanize',
+    'allauth.usersessions',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.yandex',
+    'allauth.socialaccount.providers.telegram',
     'rest_framework',
+    'rest_framework.authtoken',
+    "dj_rest_auth",
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "allauth.account.middleware.AccountMiddleware"
+    'allauth.account.middleware.AccountMiddleware',
+    'django_otp.middleware.OTPMiddleware',
+    'allauth_2fa.middleware.AllauthTwoFactorMiddleware',
+    'allauth.usersessions.middleware.UserSessionsMiddleware',
 ]
 
 AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+    'rest_framework.authentication.TokenAuthentication',
 ]
 
-SITE_ID = 1 
-
-ACCOUNT_EMAIL_VERIFICATION = "none"
+SITE_ID = 1
 
 ROOT_URLCONF = 'cyberpolygon.urls'
 
@@ -147,7 +161,39 @@ AUTH_USER_MODEL = "cyberpolygonApp.User"
 LOGIN_REDIRECT_URL = "/cyberpolygon/home"
 ACCOUNT_LOGOUT_REDIRECT_URL ='../login/'
 
+ACCOUNT_LOGOUT_ON_GET= True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+
 ACCOUNT_FORMS = {
 'signup': 'cyberpolygonApp.forms.CustomSignupForm',
 }
 
+ACCOUNT_ADAPTER = 'allauth_2fa.adapter.OTPAdapter'
+SOCIALACCOUNT_ADAPTER = 'cyberpolygonApp.adapters.CustomSocialAccountAdapter'
+
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+    ],
+}
+
+
+#CORS_ORIGIN_WHITELIST = (
+#    "http://localhost:3000",
+#    "http://localhost:8000",
+#)
+
+#CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]
+CSRF_COOKIE_DOMAIN = None
+CSRF_COOKIE_SECURE = False
+
+CORS_ALLOWED_ORIGINS = [
+        "http://localhost:3000",
+    ]
