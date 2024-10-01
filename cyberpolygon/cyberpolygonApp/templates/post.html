@@ -1,0 +1,21 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Post</title>
+</head>
+
+<body>
+{{texts}}
+<form action="{% url 'creat_post' %}" name="Coment" method="POST">
+    {% csrf_token %}
+    <textarea id="confirmationText" class="text" cols="86" rows ="20" name="confirmationText"></textarea>
+    <input type="submit" value="Email" class="submitButton" id=""/>
+</form>
+
+</body>
+</html>

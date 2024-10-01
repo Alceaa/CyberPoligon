@@ -1,5 +1,5 @@
 """
-WSGI config for cyberpoligon project.
+WSGI config.py for cyberpoligon project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

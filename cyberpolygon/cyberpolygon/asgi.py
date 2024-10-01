@@ -1,5 +1,5 @@
 """
-ASGI config for cyberpoligon project.
+ASGI config.py for cyberpoligon project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
