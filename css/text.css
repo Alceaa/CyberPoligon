@@ -1,0 +1,9 @@
+h2.text{
+    height: auto;
+    width: 475px;
+    min-width: 400px;
+    text-align:left;
+    font-size:23px;
+    
+    color: #272525;
+}
