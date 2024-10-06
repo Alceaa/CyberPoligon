@@ -162,6 +162,23 @@ class VerifyTelegram(APIView):
             except User.DoesNotExist:
                 return Response({'detail': 'Пользователя с таким телеграмом не существует'}, status=status.HTTP_400_BAD_REQUEST)
         return Response({'detail': 'Invalid request method'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+class GetMarkdownPost(APIView):
+    @csrf_exempt
+    def post(self, request):
+        if request.method == 'POST':
+            try:
+                post = Post.objects.get(title=request.data.get('title'))
+                return render(
+                    request,
+                    'markdown.html',
+                    {
+                        'post':post
+                    }
+                )
+            except Post.DoesNotExist:
+                return Response({'detail': 'Поста с таким заголовком не существует'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'detail': 'Invalid request method'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
        
 def init(request):
     return render(
@@ -172,5 +189,5 @@ def init(request):
 def home(request):
     return render(
             request,
-            'home.html'
+            'home.html',
     )

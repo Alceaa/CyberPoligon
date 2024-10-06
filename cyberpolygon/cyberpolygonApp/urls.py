@@ -6,6 +6,7 @@ urlpatterns = [
     path('home/', views.home, name='home'),
     path("accounts/", include("allauth_2fa.urls")),
     path("accounts/", include("allauth.urls")),
+    path('martor/', include('martor.urls')),
     path('api/user', views.UserListCreate.as_view()),
     
     re_path(r'^api/user/(?P<pk>[0-9]+)/$', views.UserRetrieveUpdateDestroy.as_view() ),
@@ -34,4 +35,7 @@ urlpatterns = [
     path('api/generate_qr/', views.GenerateQRcode.as_view(), name='generate_qr_code'),
     path('api/verify_otp/', views.VerifyOtp.as_view(), name='verify_otp'),
     path('api/verify_telegram/', views.VerifyTelegram.as_view(), name='verify_telegram'),
+
+    #markdown
+    path('api/get_markdown_post', views.GetMarkdownPost.as_view(), name='get_markdown_post'),
 ]

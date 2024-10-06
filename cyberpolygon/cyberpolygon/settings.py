@@ -29,6 +29,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'cyberpolygonApp/static/')
 
 # Application definition
 
@@ -57,6 +58,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     "dj_rest_auth",
     'corsheaders',
+    'martor'
 ]
 
 MIDDLEWARE = [
@@ -197,3 +199,22 @@ CSRF_COOKIE_SECURE = False
 CORS_ALLOWED_ORIGINS = [
         "http://localhost:3000",
     ]
+
+
+MARTOR_THEME = 'bootstrap'
+ALLOWED_HTML_TAGS = [
+    "a", "abbr", "b", "blockquote", "br", "cite", "code", "command",
+    "dd", "del", "dl", "dt", "em", "fieldset", "h1", "h2", "h3", "h4", "h5", "h6",
+    "hr", "i", "iframe", "img", "input", "ins", "kbd", "label", "legend",
+    "li", "ol", "optgroup", "option", "p", "pre", "small", "span", "strong",
+    "sub", "sup", "table", "tbody", "td", "tfoot", "th", "thead", "tr", "u", "ul"
+]
+
+ALLOWED_HTML_ATTRIBUTES = [
+    "alt", "class", "color", "colspan", "datetime",
+    "height", "href", "id", "name", "reversed", "rowspan",
+    "scope", "src", "style", "title", "type", "width"
+]
+
+
+CSRF_COOKIE_HTTPONLY = False
