@@ -2,7 +2,10 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework import generics
 from .serializers import *
+from .utils import markdown_find_images
 from rest_framework.response import Response
+from django.http import HttpResponse
+from django.conf import settings
 from rest_framework import status
 from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
 from allauth.socialaccount.providers.yandex.views import YandexAuth2Adapter
@@ -13,9 +16,16 @@ from django.views.decorators.csrf import csrf_exempt
 from dj_rest_auth.registration.views import SocialLoginView
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from .verification import send_verification_code_to_telegram
+from martor.utils import LazyEncoder
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.template import loader
 import qrcode
 import io
 import base64
+import json
+import os
+import uuid
 
 class UserListCreate(generics.ListCreateAPIView):
     queryset = User.objects.all()
@@ -169,16 +179,59 @@ class GetMarkdownPost(APIView):
         if request.method == 'POST':
             try:
                 post = Post.objects.get(title=request.data.get('title'))
-                return render(
-                    request,
-                    'markdown.html',
-                    {
-                        'post':post
-                    }
-                )
+                images = markdown_find_images(post.description)
+                images_str = {}
+                for image in images:
+                    image_src = str(settings.BASE_DIR) + image
+                    with open(image_src, 'rb') as opened_image:
+                        image_str = base64.b64encode(opened_image.read()).decode()
+                        images_str[image] = image_str
+
+                template = loader.get_template('markdown.html')
+                context = {"post":post}
+                return Response(data={"images":images_str, "tempalte":template.render(context)}, status=status.HTTP_200_OK)
             except Post.DoesNotExist:
                 return Response({'detail': 'Поста с таким заголовком не существует'}, status=status.HTTP_400_BAD_REQUEST)
         return Response({'detail': 'Invalid request method'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    
+def markdown_uploader(request):
+    if request.method == 'POST':
+        if 'markdown-image-upload' in request.FILES:
+            image = request.FILES['markdown-image-upload']
+            image_types = [
+                'image/png', 'image/jpg',
+                'image/jpeg', 'image/pjpeg', 'image/gif'
+            ]
+            if image.content_type not in image_types:
+                data = json.dumps({
+                    'status': 405,
+                    'error': _('Bad image format.')
+                }, cls=LazyEncoder)
+                return HttpResponse(
+                    data, content_type='application/json', status=405)
+
+            if image.size > settings.MAX_IMAGE_UPLOAD_SIZE:
+                to_MB = settings.MAX_IMAGE_UPLOAD_SIZE / (1024 * 1024)
+                data = json.dumps({
+                    'status': 405,
+                    'error': _('Maximum image file is %(size)s MB.') % {'size': to_MB}
+                }, cls=LazyEncoder)
+                return HttpResponse(
+                    data, content_type='application/json', status=405)
+
+            img_uuid = "{0}-{1}".format(uuid.uuid4().hex[:10], image.name.replace(' ', '-'))
+            tmp_file = os.path.join(settings.MARTOR_UPLOAD_PATH, img_uuid)
+            def_path = default_storage.save(tmp_file, ContentFile(image.read()))
+            img_url = os.path.join(settings.MEDIA_URL, def_path)
+
+            data = json.dumps({
+                'status': 200,
+                'link': img_url,
+                'name': image.name
+            })
+            return HttpResponse(data, content_type='application/json')
+        return HttpResponse(_('Invalid request!'))
+    return HttpResponse(_('Invalid request!'))
        
 def init(request):
     return render(

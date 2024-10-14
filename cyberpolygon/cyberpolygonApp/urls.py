@@ -38,4 +38,5 @@ urlpatterns = [
 
     #markdown
     path('api/get_markdown_post', views.GetMarkdownPost.as_view(), name='get_markdown_post'),
+    path('api/markdown_uploader/', views.markdown_uploader, name='markdown_uploader_page'),
 ]
