@@ -37,6 +37,19 @@ urlpatterns = [
     path('api/verify_telegram/', views.VerifyTelegram.as_view(), name='verify_telegram'),
 
     #markdown
-    path('api/get_markdown_post', views.GetMarkdownPost.as_view(), name='get_markdown_post'),
+    path('api/get_markdown_post/', views.GetMarkdownPost.as_view(), name='get_markdown_post'),
     path('api/markdown_uploader/', views.markdown_uploader, name='markdown_uploader_page'),
+
+    #tests
+    path('api/tests/', views.TestGetPost.as_view(), name="get_post_test"),
+    path('api/tests/content/', views.TestQuestionsAnswersPost.as_view(), name="test_questions_answers_post" ),
+    path('api/tests/check/', views.TestCheckAnswers.as_view(), name="test_check_answers"),
+
+    #vagrant
+    path('api/vagrant/start', views.VagrantStartTask.as_view(), name="vagrant_start_task"),
+    path('api/vagrant/stop', views.VagrantStopTask.as_view(), name="vagrant_stop_task"),
+    path('api/vagrant/relaod', views.VagrantReloadTask.as_view(), name="vagrant_reload_task"),
+
+    #Tasks
+    path('api/tasks/check_flag', views.TaskCheckFlag.as_view(), name="task_check_flag"),
 ]

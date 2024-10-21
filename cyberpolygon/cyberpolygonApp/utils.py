@@ -21,3 +21,9 @@ def markdown_find_images(markdown_text):
     """
     patterns = r"[^(\s]+\.(?:jpeg|jpg|png|gif)(?=\))"
     return re.findall(patterns, markdown_text)
+
+def get_or_none(classmodel, **kwargs):
+    try:
+        return classmodel.objects.get(**kwargs)
+    except classmodel.DoesNotExist:
+        return None

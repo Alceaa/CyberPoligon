@@ -69,12 +69,18 @@ class Category(models.Model):
 
 class Task(models.Model):
     id = models.AutoField(primary_key=True, db_index=True)
-    title = models.TextField(max_length=100)
+    title = models.TextField(max_length=100, unique=True, null=False)
     description = models.TextField()
     points = models.IntegerField
-    flag = models.TextField(max_length=100)
-    is_active = models.BooleanField()
     created_at = models.DateField()
+
+
+class UserDoingTask(models.Model):
+    task = models.ForeignKey('Task', on_delete=models.PROTECT)
+    user = models.ForeignKey('User', on_delete=models.PROTECT)
+    flag = models.TextField(max_length=100)
+    vagrant_password = models.TextField(max_length=50)
+    is_active = models.BooleanField()
 
 
 class Comments(models.Model):
@@ -99,5 +105,31 @@ class Post(models.Model):
 
     def __str__(self):
         return f"{self.id}, {self.title}"
-# Create your models here.
 
+
+class Test(models.Model):
+    id = models.AutoField(primary_key=True, db_index=True)
+    title = models.CharField(max_length=100, unique=True, null=False)
+    description = models.TextField(max_length=255)
+    created_at = models.DateField()
+
+
+    def __str__(self):
+        return f"{self.title}"
+
+class Question(models.Model):
+    id = models.AutoField(primary_key=True, db_index=True)
+    test_id = models.ForeignKey('Test', on_delete=models.PROTECT)
+    question_text = models.TextField()
+    created_at = models.DateField()
+
+
+class Answer(models.Model):
+    id = models.AutoField(primary_key=True, db_index=True)
+    question_id = models.ForeignKey('Question', on_delete=models.PROTECT)
+    answer_text = models.TextField()
+
+
+class CorrectAnswer(models.Model):
+    question_id = models.ForeignKey('Question', on_delete=models.PROTECT)
+    answer_id = models.ForeignKey('Answer', on_delete=models.PROTECT)

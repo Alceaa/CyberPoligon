@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import *
 from allauth.account.adapter import get_adapter
 from allauth.account.utils import setup_user_email
+import datetime
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -76,3 +77,22 @@ class LoginSerializer(serializers.Serializer):
        email = serializers.EmailField()
        username = serializers.CharField()
        password = serializers.CharField(write_only=True)
+
+
+class TestSerializer(serializers.ModelSerializer):
+    title = serializers.CharField(required=True)
+    description = serializers.CharField(required=False)
+
+    class Meta:
+        model = Test
+        fields = ['title', 'description', 'created_at']
+
+    def validate(self, title):
+        if Test.objects.filter(title=title):
+            raise serializers.ValidationError(
+                "Такой тест уже существует")
+        return title
+    
+    def save(self, data):
+        test = Test.objects.create(title=data['title'], description=data['description'], created_at=datetime.date.today())
+        return test
